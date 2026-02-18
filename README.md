@@ -1,90 +1,45 @@
-# FTD_Soulbound_Token
+# FTD Soulbound Token
 
-FTD Soulbound Token (SBT)
-Overview
+Implementation of a Soulbound Token (SBT) designed as a non-transferable academic credential for the FTD Master program.
 
-Implementation of a Soulbound Token (SBT) used as a non-transferable academic credential for the FTD Master program.
+## Overview
 
-Each student receives one non-transferable ERC-721 token issued by the institution.
+This project implements a Soulbound Token issued to students upon completion of the FTD Master program. The token is permanently bound to the student’s wallet and cannot be transferred.
 
-Features
+The objective is to provide a verifiable, on-chain credential that complements traditional academic diplomas. Each cohort (e.g., 2026, 2027) is associated with a distinct deployment and metadata configuration.
 
-ERC-721 based
+## Technical Specifications
 
-Non-transferable (Soulbound behavior)
+- Standard: ERC-721 (OpenZeppelin v5)
+- Language: Solidity ^0.8.20
+- Network: Ethereum (Sepolia testnet)
+- Metadata storage: IPFS
 
-One token per address
+The contract enforces non-transferability at the protocol level and restricts minting rights to the issuer.
 
-Batch minting
+## Core Functions
 
-Revocation possible
+- `mint(address student)`  
+- `mintBatch(address[] students)`  
+- `revoke(uint256 tokenId)`  
+- `setCohortURI(string newURI)`
 
-Metadata stored on IPFS
+Transfers are disabled in the internal `_update` function to ensure Soulbound behavior.
 
-Optional multi-signature governance (Safe)
+## Metadata Architecture
 
-Smart Contract
+Each cohort follows a two-step IPFS process:
 
-Solidity ^0.8.20
+1. Upload the cohort image to IPFS  
+2. Create and upload a metadata JSON file referencing the image CID  
 
-OpenZeppelin v5
+The contract’s `tokenURI()` function returns the metadata CID, ensuring that all tokens of the same cohort share a consistent visual and descriptive identity.
 
-Network: Ethereum (Sepolia testnet)
+Example metadata structure:
 
-Main functions:
-
-mint(address student)
-
-mintBatch(address[] students)
-
-revoke(uint256 tokenId)
-
-setCohortURI(string newURI)
-
-Transfers are disabled at the contract level.
-
-Metadata Architecture
-
-Each cohort has:
-
-Cohort image → uploaded to IPFS
-
-Metadata JSON → uploaded to IPFS
-
-Contract tokenURI() returns metadata CID
-
-Example metadata:
-
+```json
 {
   "name": "FTD Master 2026 - Soulbound Credential",
+  "description": "Official academic credential issued by FTD",
   "image": "ipfs://CID_IMAGE"
 }
-
-Deployment Guide
-
-Upload image to IPFS
-
-Create metadata.json
-
-Deploy contract in Remix
-
-Insert program name & cohort year
-
-(Optional) Transfer ownership to Safe
-
-Mint tokens
-
-Verification
-
-A credential can be verified by:
-
-Checking the student's wallet address
-
-Confirming presence of the SBT
-
-Verifying the issuer address
-
-Governance Option
-
-Ownership can be transferred to a Safe multi-signature wallet for institutional control.
-Soulbound Token implementation for FTD Master cohort 
